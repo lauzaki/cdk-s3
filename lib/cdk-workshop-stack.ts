@@ -12,9 +12,20 @@ export class CdkWorkshopStack extends cdk.Stack {
       code: lambda.Code.fromAsset('lambda'),  // code loaded from "lambda" directory
       handler: 'hr-on-msg.handler'            // file is "hello", function is "handler"
     });
+
+    const getPressignedUrl = new lambda.Function(this, 'HrGetS3UrlHandler', {
+      runtime: lambda.Runtime.NODEJS_14_X,    // execution environment
+      code: lambda.Code.fromAsset('lambda'),  // code loaded from "lambda" directory
+      handler: 'get-S3-presignedURL'            // file is "hello", function is "handler"
+    });
+
     // defines an API Gateway REST API resource backed by our "hello" function.
     new apigw.LambdaRestApi(this, 'henradio2', {
       handler: henLambda
+    });
+
+    new apigw.LambdaRestApi(this, 'getPressignedUrl', {
+      handler: getPressignedUrl
     });
 
     const bucket = new s3.Bucket(this, 'HenRadioCompressBucket')
